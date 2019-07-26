@@ -8,11 +8,15 @@ using System.Threading.Tasks;
 
 namespace GerenciadorDespesas.Mapeamento
 {
-    public class SalariosMap : IEntityTypeConfiguration<TipoDespesas>
+    public class SalariosMap : IEntityTypeConfiguration<Salarios>
     {
-        public void Configure(EntityTypeBuilder<TipoDespesas> builder)
+        public void Configure(EntityTypeBuilder<Salarios> builder)
         {
-            throw new NotImplementedException();
+            builder.HasKey(s => s.SalarioId);
+            builder.Property(s => s.Valor).IsRequired();
+            builder.HasOne(s => s.Meses).WithOne(s => s.Salarios).HasForeignKey<Salarios>(s => s.Meses);
+
+            builder.ToTable("Salarios");
         }
     }
 }

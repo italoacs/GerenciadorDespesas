@@ -17,7 +17,7 @@ namespace GerenciadorDespesas.Mapeamento
             builder.Property(m => m.Nome).HasMaxLength(50).IsRequired();
 
             builder.HasMany(m => m.Despesas).WithOne(m => m.Meses).HasForeignKey(m => m.MesId).OnDelete(DeleteBehavior.Cascade);
-            builder.HasOne(m => m.Salarios).WithOne(m => m.Meses).HasForeignKey<Salarios>(m => m.MesId).OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(m => m.Salarios).WithOne(m => m.Meses).OnDelete(DeleteBehavior.Cascade);
 
             builder.ToTable("Meses");
 
