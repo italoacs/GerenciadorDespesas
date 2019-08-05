@@ -10,6 +10,7 @@ namespace GerenciadorDespesas.Mapeamento
 {
     public class MesesMap : IEntityTypeConfiguration<Meses>
     {
+
         public void Configure(EntityTypeBuilder<Meses> builder)
         {
             builder.HasKey(m => m.MesId);
@@ -22,5 +23,6 @@ namespace GerenciadorDespesas.Mapeamento
             builder.ToTable("Meses");
 
         }
+
     }
 }
