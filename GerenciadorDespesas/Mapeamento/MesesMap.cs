@@ -21,7 +21,6 @@ namespace GerenciadorDespesas.Mapeamento
             builder.HasOne(m => m.Salarios).WithOne(m => m.Meses).OnDelete(DeleteBehavior.Cascade);
 
             builder.ToTable("Meses");
-
         }
 
     }

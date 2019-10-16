@@ -14,7 +14,7 @@ namespace GerenciadorDespesas.Mapeamento
         {
             builder.HasKey(s => s.SalarioId);
             builder.Property(s => s.Valor).IsRequired();
-            builder.HasOne(s => s.Meses).WithOne(s => s.Salarios).HasForeignKey<Salarios>(s => s.Meses);
+            builder.HasOne(s => s.Meses).WithOne(s => s.Salarios).HasForeignKey<Salarios>(s => s.MesId);
 
             builder.ToTable("Salarios");
         }
