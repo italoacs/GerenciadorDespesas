@@ -24,24 +24,6 @@ namespace GerenciadorDespesas.Controllers
             return View(await _context.TipoDespesas.ToListAsync());
         }
 
-        // GET: TipoDespesas/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tipoDespesas = await _context.TipoDespesas
-                .FirstOrDefaultAsync(m => m.TipoDespesaId == id);
-            if (tipoDespesas == null)
-            {
-                return NotFound();
-            }
-
-            return View(tipoDespesas);
-        }
-
         // GET: TipoDespesas/Create
         public IActionResult Create()
         {
@@ -57,6 +39,8 @@ namespace GerenciadorDespesas.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                TempData["Confimacao"] = tipoDespesas.Nome + " foi Cadastrado com sucesso";
                 _context.Add(tipoDespesas);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -96,6 +80,8 @@ namespace GerenciadorDespesas.Controllers
             {
                 try
                 {
+                    TempData["Confimacao"] = tipoDespesas.Nome + " foi Atualizado com sucesso";
+
                     _context.Update(tipoDespesas);
                     await _context.SaveChangesAsync();
                 }
@@ -115,30 +101,13 @@ namespace GerenciadorDespesas.Controllers
             return View(tipoDespesas);
         }
 
-        // GET: TipoDespesas/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tipoDespesas = await _context.TipoDespesas
-                .FirstOrDefaultAsync(m => m.TipoDespesaId == id);
-            if (tipoDespesas == null)
-            {
-                return NotFound();
-            }
-
-            return View(tipoDespesas);
-        }
 
         // POST: TipoDespesas/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
         {
             var tipoDespesas = await _context.TipoDespesas.FindAsync(id);
+            TempData["Confimacao"] = tipoDespesas.Nome + " foi Deletado com sucesso";
             _context.TipoDespesas.Remove(tipoDespesas);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
