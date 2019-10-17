@@ -18,6 +18,14 @@ namespace GerenciadorDespesas.Controllers
             _context = context;
         }
 
+        public async Task<JsonResult> TipoDespesaExiste(string Nome)
+        {
+            if (await _context.TipoDespesas.AnyAsync(td=>td.Nome.ToUpper()==Nome.ToUpper()))
+            {
+                return Json("Esse tipo de despesa ja existe");
+            }
+            return Json(true);
+        }
         // GET: TipoDespesas
         public async Task<IActionResult> Index()
         {
@@ -40,7 +48,7 @@ namespace GerenciadorDespesas.Controllers
             if (ModelState.IsValid)
             {
 
-                TempData["Confimacao"] = tipoDespesas.Nome + " foi Cadastrado com sucesso";
+                TempData["Confirmacao"] = tipoDespesas.Nome + " foi Cadastrado com sucesso";
                 _context.Add(tipoDespesas);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -80,7 +88,7 @@ namespace GerenciadorDespesas.Controllers
             {
                 try
                 {
-                    TempData["Confimacao"] = tipoDespesas.Nome + " foi Atualizado com sucesso";
+                    TempData["Confirmacao"] = tipoDespesas.Nome + " foi Atualizado com sucesso";
 
                     _context.Update(tipoDespesas);
                     await _context.SaveChangesAsync();
@@ -104,13 +112,13 @@ namespace GerenciadorDespesas.Controllers
 
         // POST: TipoDespesas/Delete/5
         [HttpPost]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<JsonResult> Delete(int id)
         {
             var tipoDespesas = await _context.TipoDespesas.FindAsync(id);
-            TempData["Confimacao"] = tipoDespesas.Nome + " foi Deletado com sucesso";
+            TempData["Confirmacao"] = tipoDespesas.Nome + " foi excluído com sucesso";
             _context.TipoDespesas.Remove(tipoDespesas);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return Json(tipoDespesas.Nome + " excluido com sucesso.");
         }
 
         private bool TipoDespesasExists(int id)

@@ -6,7 +6,6 @@
 
 <div class="tabela">
     <div class="container">
-
         <p class="btnNovo">
             <a asp-action="Create" class="btn btn-outline-primary btn-sm">Novo tipo de Despesa</a>
         </p>
@@ -14,6 +13,17 @@
         {
             <h6 class="alert alert-success">@TempData["Confirmacao"]</h6>
         }
+
+        @*<form asp-action="Index" asp-controller="TipoDespesas" method="post">
+            <div class="form-group">
+                <div class="input-group col-md-6">
+                    <input class="form-control" name="txtProcurar" />
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-outline-dark"><i class="fas fa-search-plus"></i></button>
+                    </div>
+                </div>
+            </div>
+        </form>*@
         <table class="table table-houver">
             <thead>
                 <tr>
@@ -34,7 +44,7 @@
                         </td>
                         <td>
                             <a asp-action="Edit" asp-route-id="@item.TipoDespesaId" class="btn btn-outline-info btn-sm">Atualizar</a> |
-                            <a class="btn btn-outline-danger btn-sm" onclick="ExibirModal(@item.TipoDespesaId, '@item.Nome'">Excluir</a>
+                            <a class="btn btn-outline-danger btn-sm" onclick="ExibirModal(@item.TipoDespesaId, '@item.Nome')">Excluir</a>
                         </td>
                     </tr>
                 }
