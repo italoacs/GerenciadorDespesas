@@ -1,20 +1,24 @@
-﻿@model IEnumerable<GerenciadorDespesas.Models.TipoDespesas>
+﻿@model IEnumerable<GerenciadorDespesas.Models.Salarios>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Salários Cadastrados";
 }
-
 <div class="tabela">
     <div class="container">
+        <h6>Salários cadastrados</h6>
+
         <p class="btnNovo">
-            <a asp-action="Create" class="btn btn-outline-primary btn-sm">Novo tipo de Despesa</a>
+            <a asp-action="Create" class="btn btn-outline-primary btn-sm">Novo salário</a>
         </p>
+
         @if (TempData["Confirmacao"] != null)
         {
-            <h6 class="alert alert-success">@TempData["Confirmacao"]</h6>
+            <h6 class="alert alert-success">
+                @TempData["Confirmacao"]
+            </h6>
         }
 
-        <form asp-action="Index" asp-controller="TipoDespesas" method="post">
+        <form asp-action="Index" asp-controller="Salarios" method="post">
             <div class="form-group">
                 <div class="input-group col-md-6">
                     <input class="form-control" name="txtProcurar" />
@@ -24,15 +28,16 @@
                 </div>
             </div>
         </form>
-        <table class="table table-houver">
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th>
-                        @Html.DisplayNameFor(model => model.Nome)
+                        @Html.DisplayNameFor(model => model.Meses)
                     </th>
                     <th>
-                        Opcões
+                        @Html.DisplayNameFor(model => model.Valor)
                     </th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -40,17 +45,19 @@
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.Nome)
+                            @Html.DisplayFor(modelItem => item.Meses.Nome)
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.TipoDespesaId" class="btn btn-outline-info btn-sm">Atualizar</a> |
-                            <a class="btn btn-outline-danger btn-sm" onclick="ExibirModal(@item.TipoDespesaId, '@item.Nome')">Excluir</a>
+                            @Html.DisplayFor(modelItem => item.Valor)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.SalarioId" class="btn btn-outline-info  btn-sm">Atualizar</a> |
+                            <a onclick="ExibirModal(@item.SalarioId)" class="btn  btn-outline-danger btn-sm">Excluir</a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
-
     </div>
 </div>
 
@@ -65,11 +72,11 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p>Deseja prosseguir com a exclusão de  <text class="nome"></text></p>
+                <p>Deseja prosseguir com a exclusão do salário ?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-primary btnExcluir">Sim</button>
-                <button type="button" class="btn btn-outline-danger" data-dismiss="modal">Não</button>
+                <button type="button" class="btn btn-outline-primary btn-sm btnExcluir">Sim</button>
+                <button type="button" class="btn btn-outline-danger btn-sm" data-dismiss="modal">Não</button>
             </div>
         </div>
     </div>
@@ -77,14 +84,13 @@
 
 @section Scripts{
     <script>
-        function ExibirModal(id, nome) {
-            $(".nome")[0].innerHTML = nome;
+        function ExibirModal(id) {
 
             $(".modal").modal();
 
             $(".btnExcluir").on('click', function () {
                 $.ajax({
-                    url: "TipoDespesas/Delete",
+                    url: "Salarios/Delete",
                     method: "POST",
                     data: { id: id },
                     success: function (data) {

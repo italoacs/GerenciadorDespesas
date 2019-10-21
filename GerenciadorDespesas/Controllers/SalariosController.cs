@@ -9,11 +9,11 @@ using GerenciadorDespesas.Models;
 
 namespace GerenciadorDespesas.Controllers
 {
-    public class TipoDespesasController : Controller
+    public class SalariosController : Controller
     {
         private readonly Contexto _context;
 
-        public TipoDespesasController(Contexto context)
+        public SalariosController(Contexto context)
         {
             _context = context;
         }
@@ -21,51 +21,46 @@ namespace GerenciadorDespesas.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.TipoDespesas.ToListAsync());
+            var contexto = _context.Salarios.Include(s => s.Meses);
+            return View(await contexto.ToListAsync());
         }
+
+
         [HttpPost]
         public async Task<IActionResult> Index(string txtProcurar)
         {
             if (!String.IsNullOrEmpty(txtProcurar))
             {
-                return View(await _context.TipoDespesas.Where(td => td.Nome.ToUpper().Contains(txtProcurar.ToUpper())).ToListAsync());
+                return View(await _context.Salarios.Include(s => s.Meses).Where(m => m.Meses.Nome.ToUpper().Contains(txtProcurar.ToUpper())).ToListAsync());
             }
-            return View(await _context.TipoDespesas.ToListAsync());
+            return View(await _context.Salarios.Include(s => s.Meses).ToListAsync());
         }
-
-        public async Task<JsonResult> TipoDespesaExiste(string Nome)
-        {
-            if (await _context.TipoDespesas.AnyAsync(td => td.Nome.ToUpper() == Nome.ToUpper()))
-            {
-                return Json("Esse tipo de despesa ja existe");
-            }
-            return Json(true);
-        }
-        // GET: TipoDespesas/Create
+        // GET: Salarios/Create
         public IActionResult Create()
         {
+            ViewData["MesId"] = new SelectList(_context.Meses.Where(s => s.MesId != s.Salarios.MesId), "MesId", "Nome");
             return View();
         }
 
-        // POST: TipoDespesas/Create
+        // POST: Salarios/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TipoDespesaId,Nome")] TipoDespesas tipoDespesas)
+        public async Task<IActionResult> Create([Bind("SalarioId,MesId,Valor")] Salarios salarios)
         {
             if (ModelState.IsValid)
             {
-
-                TempData["Confirmacao"] = tipoDespesas.Nome + " foi Cadastrado com sucesso";
-                _context.Add(tipoDespesas);
+                TempData["Confirmacao"] = "Salário cadastrado com sucesso.";
+                _context.Add(salarios);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(tipoDespesas);
+            ViewData["MesId"] = new SelectList(_context.Meses.Where(s => s.MesId != s.Salarios.MesId), "MesId", "Nome", salarios.MesId);
+            return View(salarios);
         }
 
-        // GET: TipoDespesas/Edit/5
+        // GET: Salarios/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +68,23 @@ namespace GerenciadorDespesas.Controllers
                 return NotFound();
             }
 
-            var tipoDespesas = await _context.TipoDespesas.FindAsync(id);
-            if (tipoDespesas == null)
+            var salarios = await _context.Salarios.FindAsync(id);
+            if (salarios == null)
             {
                 return NotFound();
             }
-            return View(tipoDespesas);
+            ViewData["MesId"] = new SelectList(_context.Meses.Where(s => s.MesId == salarios.MesId), "MesId", "Nome", salarios.MesId);
+            return View(salarios);
         }
 
-        // POST: TipoDespesas/Edit/5
+        // POST: Salarios/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("TipoDespesaId,Nome")] TipoDespesas tipoDespesas)
+        public async Task<IActionResult> Edit(int id, [Bind("SalarioId,MesId,Valor")] Salarios salarios)
         {
-            if (id != tipoDespesas.TipoDespesaId)
+            if (id != salarios.SalarioId)
             {
                 return NotFound();
             }
@@ -97,14 +93,13 @@ namespace GerenciadorDespesas.Controllers
             {
                 try
                 {
-                    TempData["Confirmacao"] = tipoDespesas.Nome + " foi Atualizado com sucesso";
-
-                    _context.Update(tipoDespesas);
+                    _context.Update(salarios);
                     await _context.SaveChangesAsync();
+                    TempData["Confirmacao"] = "Salário atualizado com sucesso.";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TipoDespesasExists(tipoDespesas.TipoDespesaId))
+                    if (!SalariosExists(salarios.SalarioId))
                     {
                         return NotFound();
                     }
@@ -115,24 +110,25 @@ namespace GerenciadorDespesas.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(tipoDespesas);
+            ViewData["MesId"] = new SelectList(_context.Meses.Where(s => s.MesId == salarios.MesId), "MesId", "Nome", salarios.MesId);
+            return View(salarios);
         }
 
 
-        // POST: TipoDespesas/Delete/5
+
+
         [HttpPost]
-        public async Task<JsonResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var tipoDespesas = await _context.TipoDespesas.FindAsync(id);
-            TempData["Confirmacao"] = tipoDespesas.Nome + " foi excluído com sucesso";
-            _context.TipoDespesas.Remove(tipoDespesas);
+            var salarios = await _context.Salarios.FindAsync(id);
+            _context.Salarios.Remove(salarios);
             await _context.SaveChangesAsync();
-            return Json(tipoDespesas.Nome + " excluido com sucesso.");
+            return RedirectToAction(nameof(Index));
         }
 
-        private bool TipoDespesasExists(int id)
+        private bool SalariosExists(int id)
         {
-            return _context.TipoDespesas.Any(e => e.TipoDespesaId == id);
+            return _context.Salarios.Any(e => e.SalarioId == id);
         }
     }
 }
