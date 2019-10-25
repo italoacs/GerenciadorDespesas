@@ -25,6 +25,8 @@ namespace GerenciadorDespesas.Controllers
             const int itensPagina = 10;
             int numeroPagina = (pagina ?? 1);
 
+            ViewData["Meses"] = new SelectList(_context.Meses.Where(x => x.MesId == x.Salarios.MesId),"MesId", "Nome");
+
             var contexto = _context.Despesas.Include(d => d.Meses).Include(d => d.TipoDespesas).OrderBy(d=>d.MesId);
             return View(await contexto.ToPagedListAsync(numeroPagina,itensPagina));
         }
@@ -75,9 +77,6 @@ namespace GerenciadorDespesas.Controllers
             return View(despesas);
         }
 
-        // POST: Despesas/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("DespesaId,MesId,TipoDespesaId,Valor")] Despesas despesas)
